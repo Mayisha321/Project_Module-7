@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-module7
+  namespace: p-m7
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: project-module7
+  template:
+    metadata:
+      labels:
+        app: project-module7
+    spec:
+      containers:
+      - name: project-module7
+        image: mayisha437/project-module7
+        ports:
+        - containerPort: 8000
+        env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: django-secret-key
+                key: SECRET_KEY
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: p-m7-service
+  namespace: p-m7
+spec:
+  type: NodePort
+  selector:
+    app: project-module7
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+    nodePort: 30080
